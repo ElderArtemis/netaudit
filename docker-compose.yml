@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: netaudit
+      POSTGRES_PASSWORD: netaudit
+      POSTGRES_DB: netaudit
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netaudit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+
+  worker:
+    build:
+      context: .
+    env_file: .env
+    command: ["python", "-m", "app.workers.scan_worker"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+
+volumes:
+  postgres_data:

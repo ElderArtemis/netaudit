@@ -1,0 +1,25 @@
+# Normaliza finales de linea: LF en el repositorio, siempre.
+* text=auto eol=lf
+
+# Ficheros que DEBEN ser LF aunque se editen en Windows
+*.py      text eol=lf
+*.sh      text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.ini     text eol=lf
+*.mako    text eol=lf
+*.md      text eol=lf
+*.txt     text eol=lf
+*.html    text eol=lf
+*.css     text eol=lf
+*.js      text eol=lf
+*.svg     text eol=lf
+Dockerfile   text eol=lf
+.env.example text eol=lf
+
+# Binarios: que Git no los toque
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary

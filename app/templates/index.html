@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}NetAudit · Dashboard{% endblock %}
+{% block content %}
+<section class="metrics">
+    <div class="card metric">
+        <span class="metric-label">// hosts descubiertos</span>
+        <span class="metric-value">{{ total_hosts }}</span>
+    </div>
+    <div class="card metric">
+        <span class="metric-label">// vulnerabilidades</span>
+        <span class="metric-value">{{ total_vulns }}</span>
+    </div>
+    <div class="card metric critical">
+        <span class="metric-label">// críticas</span>
+        <span class="metric-value">{{ total_critical }}</span>
+    </div>
+</section>
+
+<section class="card">
+    <h2>$ nuevo escaneo</h2>
+    <form id="scan-form" class="form-grid">
+        <label>Nombre
+            <input type="text" name="name" required placeholder="Auditoría VLAN servidores Q2 2026">
+        </label>
+        <label>Rango (CIDR, separa con comas)
+            <input type="text" name="target_cidr" required placeholder="192.168.1.0/24, 10.0.0.0/16">
+        </label>
+        <label>Puertos
+            <input type="text" name="ports" value="1-65535">
+        </label>
+        <label>Rate Masscan (pps)
+            <input type="number" name="masscan_rate" value="10000" min="100" max="100000">
+        </label>
+        <label class="full">Scripts NSE (separados por coma)
+            <input type="text" name="nmap_scripts" value="vuln,auth,default">
+        </label>
+        <button type="submit" class="btn-primary">[ ejecutar ]</button>
+    </form>
+    <div id="form-status" class="status-line"></div>
+</section>
+
+<section class="card">
+    <h2>$ historial de escaneos</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Rango</th>
+                <th>Estado</th>
+                <th>Progreso</th>
+                <th>Creado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in scans %}
+            <tr>
+                <td>#{{ s.id }}</td>
+                <td>{{ s.name }}</td>
+                <td><code>{{ s.target_cidr }}</code></td>
+                <td><span class="badge badge-{{ s.status.value }}">{{ s.status.value }}</span></td>
+                <td>
+                    <div class="progress-bar"><span style="width: {{ s.progress }}%"></span></div>
+                </td>
+                <td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <a href="/scans/{{ s.id }}" class="link-detail">ver →</a>
+                    {% if s.status.value == 'completed' %}
+                    <a href="/api/scans/{{ s.id }}/export.pdf" class="link-detail" download title="Descargar PDF">⬇ pdf</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty">// sin escaneos todavía</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

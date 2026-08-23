@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}NetAudit · Scan #{{ scan.id }}{% endblock %}
+{% block content %}
+<section class="card">
+    <div class="card-header">
+        <h2>$ scan #{{ scan.id }} · {{ scan.name }}</h2>
+        {% if scan.status.value == 'completed' %}
+        <a href="/api/scans/{{ scan.id }}/export.pdf" class="btn-secondary" download>
+            [ exportar PDF ]
+        </a>
+        {% endif %}
+    </div>
+    <div class="meta-grid">
+        <div><span class="meta-label">target:</span> <code>{{ scan.target_cidr }}</code></div>
+        <div><span class="meta-label">puertos:</span> <code>{{ scan.ports }}</code></div>
+        <div><span class="meta-label">rate:</span> {{ scan.masscan_rate }} pps</div>
+        <div><span class="meta-label">scripts:</span> <code>{{ scan.nmap_scripts }}</code></div>
+        <div><span class="meta-label">estado:</span> <span id="status" class="badge badge-{{ scan.status.value }}">{{ scan.status.value }}</span></div>
+        <div><span class="meta-label">creado:</span> {{ scan.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+    </div>
+    <div class="progress-bar large"><span id="progress-bar" style="width: {{ scan.progress }}%"></span></div>
+    <p id="progress-msg" class="status-line"></p>
+</section>
+
+<section class="metrics">
+    <div class="card metric critical"><span class="metric-label">// críticas</span><span class="metric-value">{{ summary.critical }}</span></div>
+    <div class="card metric high"><span class="metric-label">// altas</span><span class="metric-value">{{ summary.high }}</span></div>
+    <div class="card metric medium"><span class="metric-label">// medias</span><span class="metric-value">{{ summary.medium }}</span></div>
+    <div class="card metric low"><span class="metric-label">// bajas</span><span class="metric-value">{{ summary.low }}</span></div>
+    <div class="card metric"><span class="metric-label">// info</span><span class="metric-value">{{ summary.info }}</span></div>
+</section>
+
+<section class="card">
+    <h2>$ hosts</h2>
+    {% for host in scan.hosts %}
+    <details class="host-block">
+        <summary>
+            <code class="ip">{{ host.ip }}</code>
+            {% if host.hostname %}<span class="hostname">({{ host.hostname }})</span>{% endif %}
+            {% if host.os_name %}<span class="os">· {{ host.os_name }} ({{ host.os_accuracy }}%)</span>{% endif %}
+            {% if host.vendor %}<span class="vendor">· {{ host.vendor }}</span>{% endif %}
+            <span class="counts">
+                {{ host.ports|length }} puertos · {{ host.vulnerabilities|length }} vulns
+            </span>
+        </summary>
+        <div class="host-body">
+            <h3>puertos</h3>
+            <table class="data-table compact">
+                <thead><tr><th>puerto</th><th>proto</th><th>servicio</th><th>producto</th><th>versión</th></tr></thead>
+                <tbody>
+                    {% for p in host.ports %}
+                    <tr>
+                        <td>{{ p.port }}</td>
+                        <td>{{ p.protocol }}</td>
+                        <td>{{ p.service or '-' }}</td>
+                        <td>{{ p.product or '-' }}</td>
+                        <td>{{ p.version or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if host.vulnerabilities %}
+            <h3>vulnerabilidades</h3>
+            <table class="data-table compact">
+                <thead><tr><th>severidad</th><th>script</th><th>cve</th><th>puerto</th><th>título</th></tr></thead>
+                <tbody>
+                    {% for v in host.vulnerabilities %}
+                    <tr class="vuln-row">
+                        <td><span class="badge badge-sev-{{ v.severity }}">{{ v.severity }}</span></td>
+                        <td><code>{{ v.script_id }}</code></td>
+                        <td>{% if v.cve %}<code>{{ v.cve }}</code>{% else %}-{% endif %}</td>
+                        <td>{{ v.port or '-' }}</td>
+                        <td title="{{ v.output }}">{{ v.title }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </details>
+    {% else %}
+    <p class="empty">// sin hosts descubiertos</p>
+    {% endfor %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+    window.SCAN_ID = {{ scan.id }};
+    window.SCAN_STATUS = "{{ scan.status.value }}";
+</script>
+<script src="/static/js/scan_detail.js"></script>
+{% endblock %}

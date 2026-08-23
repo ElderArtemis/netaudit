@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Configuracion local con credenciales — NUNCA versionar
+.env
+.env.*
+!.env.example
+
+# Manifiestos de despliegue especificos de una infraestructura
+# (contienen Secrets, IPs y nombres de nodo propios)
+k8s/
+manifests/
+*.secret.yaml
+*-secrets.yaml
+
+# Resultados de escaneo e informes generados
+*.xml
+*.xml.tmp
+*.nmap
+*.gnmap
+*.masscan
+*.pdf
+/tmp/
+scans/
+reports/
+
+# Claves y certificados
+*.pem
+*.key
+*.crt
+*.p12
+*.kdbx
+
+# Logs y bases de datos locales
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

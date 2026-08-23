@@ -1,0 +1,164 @@
+:root {
+    --bg: #0a0e0d;
+    --bg-card: #0f1514;
+    --border: #1f2a28;
+    --border-strong: #2a3937;
+    --text: #c8d4d2;
+    --text-dim: #6b7c79;
+    --accent: #5fd9b5;
+    --accent-soft: #2a8568;
+    --warn: #e8b04b;
+    --crit: #e85a5a;
+    --high: #e88b4b;
+    --med: #e8c34b;
+    --low: #5fb4d9;
+    --info: #6b7c79;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px; line-height: 1.5;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { background: var(--bg-card); padding: 1px 6px; border-radius: 2px; color: var(--accent); }
+
+.topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+}
+.brand { display: flex; gap: 12px; align-items: baseline; }
+.prompt { color: var(--accent); font-weight: 600; }
+.brand-name { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.topbar nav a { margin-left: 18px; color: var(--text-dim); }
+.topbar nav a:hover { color: var(--accent); text-decoration: none; }
+
+main { max-width: 1300px; margin: 0 auto; padding: 32px; }
+footer {
+    text-align: center; padding: 24px; color: var(--text-dim); font-size: 12px;
+    border-top: 1px solid var(--border); margin-top: 60px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.card h2 { margin-top: 0; font-size: 16px; color: var(--accent); font-weight: 500; }
+.card h3 { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 18px; }
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.metric { display: flex; flex-direction: column; gap: 8px; }
+.metric-label { color: var(--text-dim); font-size: 12px; }
+.metric-value { font-size: 32px; font-weight: 700; color: var(--accent); }
+.metric.critical .metric-value { color: var(--crit); }
+.metric.high .metric-value { color: var(--high); }
+.metric.medium .metric-value { color: var(--med); }
+.metric.low .metric-value { color: var(--low); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-dim); }
+.form-grid label.full { grid-column: 1 / -1; }
+.form-grid input {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border-strong); border-radius: 2px;
+    padding: 9px 12px; font-family: var(--font-mono); font-size: 14px;
+}
+.form-grid input:focus { outline: none; border-color: var(--accent); }
+.btn-primary {
+    grid-column: 1 / -1;
+    background: var(--accent-soft); color: #0a0e0d; border: none; padding: 10px 24px;
+    font-family: var(--font-mono); font-weight: 700; font-size: 14px; cursor: pointer;
+    border-radius: 2px; letter-spacing: 1px;
+    transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--accent); }
+
+.card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 8px;
+}
+.card-header h2 { margin: 0; }
+.btn-secondary {
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent-soft); padding: 8px 16px;
+    font-family: var(--font-mono); font-size: 13px; cursor: pointer;
+    border-radius: 2px; letter-spacing: 0.5px; text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-secondary:hover {
+    background: var(--accent-soft); color: var(--bg); text-decoration: none;
+}
+
+.status-line { color: var(--text-dim); font-size: 12px; margin-top: 12px; min-height: 18px; }
+
+.data-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.data-table th, .data-table td {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+.data-table th { color: var(--text-dim); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+.data-table.compact th, .data-table.compact td { padding: 6px 10px; font-size: 12px; }
+.data-table tbody tr:hover { background: rgba(95, 217, 181, 0.04); }
+.empty { color: var(--text-dim); text-align: center; padding: 24px; }
+
+.badge {
+    display: inline-block; padding: 2px 9px; border-radius: 2px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    background: var(--border); color: var(--text);
+}
+.badge-pending { background: #2a3937; color: var(--text-dim); }
+.badge-running_masscan, .badge-running_nmap { background: #2a4858; color: var(--low); }
+.badge-completed { background: #1f3a30; color: var(--accent); }
+.badge-failed { background: #3a1f1f; color: var(--crit); }
+.badge-cancelled { background: #2a2a2a; color: var(--text-dim); }
+.badge-sev-critical { background: #3a1717; color: var(--crit); }
+.badge-sev-high { background: #3a2517; color: var(--high); }
+.badge-sev-medium { background: #3a3517; color: var(--med); }
+.badge-sev-low { background: #17283a; color: var(--low); }
+.badge-sev-info { background: var(--border); color: var(--text-dim); }
+
+.progress-bar {
+    width: 100%; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+}
+.progress-bar.large { height: 8px; margin: 16px 0; }
+.progress-bar span {
+    display: block; height: 100%; background: var(--accent);
+    transition: width 0.4s ease;
+}
+
+.meta-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; margin-top: 12px;
+}
+.meta-label { color: var(--text-dim); margin-right: 6px; }
+
+.host-block {
+    border: 1px solid var(--border); border-radius: 2px; padding: 0; margin-bottom: 8px;
+    background: var(--bg);
+}
+.host-block summary {
+    padding: 12px 16px; cursor: pointer; user-select: none;
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+}
+.host-block summary:hover { background: rgba(95, 217, 181, 0.04); }
+.host-block .ip { color: var(--accent); font-weight: 600; }
+.host-block .hostname { color: var(--text); }
+.host-block .os, .host-block .vendor { color: var(--text-dim); }
+.host-block .counts { margin-left: auto; color: var(--text-dim); font-size: 12px; }
+.host-body { padding: 0 16px 16px 16px; border-top: 1px solid var(--border); }
+
+.link-detail { color: var(--accent); }
